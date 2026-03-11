@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote / Devis — AuroreAD</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  const FORMSPREE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwYmazHrSMyXH7dzlXJpaGt9Unx1MfFzBneASIxWL5bjiMeWwpZHaXWcRIAdz5bLbwi/exec';
+</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1a2b4a; --navy-deep: #0f1c30; --gold: #c8a850; --gold-light: #e0c070;
+  --gold-pale: #f5ecd4; --white: #ffffff; --off-white: #f8f6f1; --light-grey: #f0ede6;
+  --border: #ddd8ce; --text-dark: #1a2b4a; --text-mid: #4a5568; --text-soft: #8a9ab5;
+  --green: #2d6a4f; --green-bg: #eaf5ee;
+}
+body { font-family: 'Raleway', sans-serif; background: var(--off-white); color: var(--text-dark); }
+.lang-bar { background: var(--navy-deep); padding: 0.5rem 3rem; display: flex; justify-content: flex-end; gap: 0.5rem; }
+.lang-btn { font-family: 'Courier Prime', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 2px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s; }
+.lang-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+header { background: var(--navy); padding: 1.5rem 3rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--gold); }
+.logo-wrap { display: flex; align-items: center; gap: 1rem; }
+.logo-text { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--white); }
+.logo-text span { color: var(--gold); }
+.logo-divider { width: 1px; height: 1.4rem; background: rgba(255,255,255,0.2); }
+.logo-sub { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.header-tag { font-family: 'Courier Prime', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.12); padding: 0.3rem 0.8rem; border-radius: 2px; }
+.hero { background: var(--navy); padding: 3.5rem 3rem 3rem; text-align: center; position: relative; overflow: hidden; }
+.hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--green), var(--gold), #5a3080); }
+.hero-eyebrow { font-family: 'Courier Prime', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
+.hero-eyebrow::before, .hero-eyebrow::after { content: ''; display: inline-block; width: 2rem; height: 1px; background: var(--gold); opacity: 0.4; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 300; color: var(--white); line-height: 1.2; margin-bottom: 1rem; }
+.hero-title em { font-style: italic; color: var(--gold); }
+.hero-desc { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.75; max-width: 540px; margin: 0 auto; }
+.main { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+.step-header { margin-bottom: 1.5rem; }
+.step-eyebrow { font-family: 'Courier Prime', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+.step-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 300; color: var(--navy); }
+.step-title em { font-style: italic; }
+.cat-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.cat-tab { padding: 0.6rem 1.2rem; border: 1.5px solid var(--border); border-radius: 3px; background: var(--white); cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--text-mid); transition: all 0.2s; }
+.cat-tab:hover { border-color: var(--navy); color: var(--navy); }
+.cat-tab.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.offers-panel { display: none; }
+.offers-panel.active { display: block; }
+.cards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-bottom: 2rem; }
+.cards-grid.three { grid-template-columns: repeat(3,1fr); }
+.offer-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 6px; padding: 1.8rem; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.offer-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--border); transition: background 0.2s; }
+.offer-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,43,74,0.1); }
+.offer-card:hover::before { background: var(--navy); }
+.offer-card.selected, .offer-card.featured { border-color: var(--gold); box-shadow: 0 4px 20px rgba(200,168,80,0.2); }
+.offer-card.selected::before, .offer-card.featured::before { background: var(--gold); }
+.offer-check { position: absolute; top: 1rem; right: 1rem; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: transparent; transition: all 0.2s; }
+.offer-card.selected .offer-check { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.offer-badge { display: inline-block; font-family: 'Courier Prime', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 2px; margin-bottom: 0.8rem; font-weight: 700; }
+.badge-free { background: var(--green-bg); color: var(--green); border: 1px solid #a7d8b8; }
+.badge-pop { background: var(--gold); color: var(--navy); }
+.offer-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+.offer-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 400; color: var(--navy); margin-bottom: 0.25rem; }
+.offer-price { font-family: 'Courier Prime', monospace; font-size: 1.2rem; font-weight: 700; color: var(--gold); }
+.offer-price-sub { font-size: 0.72rem; color: var(--text-soft); margin-bottom: 0.8rem; font-style: italic; }
+.offer-desc { font-size: 0.79rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 1rem; }
+.offer-features { list-style: none; }
+.offer-features li { font-size: 0.77rem; color: var(--text-dark); padding: 0.2rem 0; display: flex; gap: 0.4rem; line-height: 1.4; }
+.offer-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.pillar-num { font-family: 'Courier Prime', monospace; font-size: 0.6rem; color: var(--gold); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+.pillar-tagline { font-size: 0.74rem; font-style: italic; color: var(--text-soft); margin-bottom: 0.7rem; }
+.pillar-features { list-style: none; }
+.pillar-features li { font-size: 0.74rem; color: var(--text-mid); padding: 0.18rem 0; display: flex; gap: 0.4rem; line-height: 1.4; }
+.pillar-features li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+.divider { height: 1px; background: var(--border); margin: 2.5rem 0; }
+.recap-bar { background: var(--gold-pale); border: 1px solid #e8c96e; border-left: 4px solid var(--gold); border-radius: 3px; padding: 0.9rem 1.2rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: #7a5500; display: none; }
+.recap-bar.visible { display: block; }
+.form-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 20px rgba(26,43,74,0.06); }
+.form-head { background: var(--navy); padding: 1.5rem 2rem; border-bottom: 3px solid var(--gold); }
+.form-head-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 300; color: var(--white); margin-bottom: 0.3rem; }
+.form-head-sub { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+.form-body { padding: 2rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-row { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 0.4rem; }
+.req { color: var(--gold); }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--border); border-radius: 3px; font-family: 'Raleway', sans-serif; font-size: 0.88rem; color: var(--text-dark); background: var(--white); outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--navy); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-soft); }
+.form-textarea { resize: vertical; min-height: 100px; }
+.budget-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.budget-btn { padding: 0.5rem 1rem; border: 1.5px solid var(--border); border-radius: 3px; background: transparent; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--text-mid); transition: all 0.15s; }
+.budget-btn:hover { border-color: var(--navy); color: var(--navy); }
+.budget-btn.sel { border-color: var(--gold); background: var(--gold-pale); color: #7a5500; }
+.gdpr-row { display: flex; align-items: flex-start; gap: 0.8rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--off-white); border-radius: 3px; border: 1px solid var(--border); }
+.gdpr-cb { width: 18px; height: 18px; flex-shrink: 0; margin-top: 0.1rem; accent-color: var(--gold); cursor: pointer; }
+.gdpr-txt { font-size: 0.75rem; color: var(--text-soft); line-height: 1.55; }
+.btn-submit { width: 100%; padding: 1.1rem; background: var(--gold); color: var(--navy); border: none; border-radius: 3px; font-family: 'Raleway', sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn-submit:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,168,80,0.35); }
+.success-box { display: none; text-align: center; padding: 3rem 2rem; }
+.success-box.visible { display: block; }
+.success-icon { font-size: 3rem; margin-bottom: 1rem; }
+.success-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 300; color: var(--navy); margin-bottom: 0.8rem; }
+.success-title em { color: var(--gold); font-style: italic; }
+.success-desc { font-size: 0.9rem; color: var(--text-mid); line-height: 1.7; max-width: 440px; margin: 0 auto 1.5rem; }
+.btn-lia { display: inline-block; background: var(--gold); color: var(--navy); padding: 0.8rem 1.8rem; border-radius: 3px; font-family: 'Raleway', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+.trust-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2.5rem; }
+.trust-item { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 1.2rem; text-align: center; }
+.trust-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.trust-label { font-size: 0.78rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+.trust-sub { font-size: 0.72rem; color: var(--text-soft); line-height: 1.4; }
+footer { background: var(--navy-deep, #0f1c30); border-top: 1px solid rgba(255,255,255,0.06); padding: 1.2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+.foot-brand { font-family: 'Playfair Display', serif; font-size: 0.85rem; font-style: italic; color: rgba(255,255,255,0.35); }
+.foot-brand span { color: var(--gold); }
+.foot-copy { font-family: 'Courier Prime', monospace; font-size: 0.58rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.18); text-transform: uppercase; }
+@media(max-width:640px){
+  .lang-bar,.header,.hero{padding-left:1.5rem;padding-right:1.5rem;}
+  header{padding:1.2rem 1.5rem;} .logo-sub{display:none;}
+  .main{padding:2rem 1.2rem 4rem;}
+  .cards-grid,.cards-grid.three,.form-grid,.trust-strip{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:0.5rem;text-align:center;padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('fr')">FR</button>
+</div>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-text">Aurore<span>AD</span></div>
+    <div class="logo-divider"></div>
+    <div class="logo-sub" id="h-sub">Free Quote</div>
+  </div>
+  <div class="header-tag" id="h-tag">Response within 24h</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">AuroreAD · Independent Advisory</div>
+  <h1 class="hero-title" id="hero-title">Request your <em>free quote</em></h1>
+  <p class="hero-desc" id="hero-desc">Select the service that matches your needs — we'll get back to you within 24 hours with a personalised proposal.</p>
+</div>
+
+<div class="main">
+
+  <div class="step-header">
+    <div class="step-eyebrow" id="s1-eye">Step 01 — Choose your service</div>
+    <div class="step-title" id="s1-title">What can we <em>help you with?</em></div>
+  </div>
+
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="showTab('starter')" id="tab-starter">🚀 <span id="tl-starter">Starter Offer</span></button>
+    <button class="cat-tab" onclick="showTab('strategic')" id="tab-strategic">📊 <span id="tl-strategic">Strategic Consulting</span></button>
+    <button class="cat-tab" onclick="showTab('financial')" id="tab-financial">💼 <span id="tl-financial">Financial Management</span></button>
+    <button class="cat-tab" onclick="showTab('accounting')" id="tab-accounting">📋 <span id="tl-accounting">Accounting Support</span></button>
+    <button class="cat-tab" onclick="showTab('esg')" id="tab-esg">🌱 <span id="tl-esg">LIA' ESG</span></button>
+  </div>
+
+  <!-- STARTER -->
+  <div class="offers-panel active" id="panel-starter">
+    <div class="cards-grid">
+      <div class="offer-card" onclick="pick(this,'Business Diagnosis','Diagnostic Entreprise')">
+        <div class="offer-check">✓</div>
+        <div class="offer-badge badge-free" id="lb-free">FREE · No commitment</div>
+        <div class="offer-icon">🔍</div>
+        <div class="offer-name" id="lb-diag-name">Business Diagnosis</div>
+        <div class="offer-price">€0</div>
+        <div class="offer-price-sub" id="lb-diag-sub">30-min video call · Step I · No obligation</div>
+        <div class="offer-desc" id="lb-diag-desc">A first no-obligation consultation to identify your priorities and unlock your current situation.</div>
+        <ul class="offer-features">
+          <li id="df1">30-minute video call</li>
+          <li id="df2">Assessment of your current situation</li>
+          <li id="df3">2–3 actionable recommendations</li>
+          <li id="df4">Identification of quick wins</li>
+          <li id="df5">No strings attached</li>
+        </ul>
+      </div>
+      <div class="offer-card featured" onclick="pick(this,'Starter Pack','Pack Starter')">
+        <div class="offer-check">✓</div>
+        <div class="offer-badge badge-pop" id="lb-pop">⭐ POPULAR</div>
+        <div class="offer-icon">🎯</div>
+        <div class="offer-name" id="lb-sp-name">Starter Pack</div>
+        <div class="offer-price">€129 <span style="font-size:0.72rem;font-weight:400;color:var(--text-soft)" id="lb-vat">VAT incl.</span></div>
+        <div class="offer-price-sub" id="lb-sp-sub">One-time · Value €500+ · 7 days total · Step II</div>
+        <div class="offer-desc" id="lb-sp-desc">A structured 7-day support programme with a concrete and personalised action plan.</div>
+        <ul class="offer-features">
+          <li id="sf1">In-depth 1-hour audit</li>
+          <li id="sf2">Custom 10–15 page roadmap</li>
+          <li id="sf3">30–90 day action plan</li>
+          <li id="sf4">45-minute review session</li>
+          <li id="sf5">1 week of email support</li>
+          <li id="sf6">Choose your focus: Finance, Prospecting, Digital or Operations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGIC -->
+  <div class="offers-panel" id="panel-strategic">
+    <div class="cards-grid">
+      <div class="offer-card" onclick="pick(this,'Strategic Diagnosis','Diagnostic Stratégique')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="sn1">01 — Strategic Consulting</div>
+        <div class="offer-name" id="sm1">Strategic Diagnosis</div>
+        <div class="pillar-tagline" id="st1">"Taking a snapshot of your current situation"</div>
+        <ul class="pillar-features">
+          <li id="s1f1">Comprehensive analysis: strengths, weaknesses, opportunities</li>
+          <li id="s1f2">Study of your market and competition</li>
+          <li id="s1f3">Identification of obstacles hindering your growth</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Personalised Action Plan','Plan d\'Action Personnalisé')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="sn2">02 — Strategic Consulting</div>
+        <div class="offer-name" id="sm2">Personalised Action Plan</div>
+        <div class="pillar-tagline" id="st2">"Chart your course"</div>
+        <ul class="pillar-features">
+          <li id="s2f1">Clear and realistic goals (1 to 3 years)</li>
+          <li id="s2f2">Strategy tailored to YOUR resources</li>
+          <li id="s2f3">Prioritised action roadmap</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Field Support','Accompagnement Terrain')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="sn3">03 — Strategic Consulting</div>
+        <div class="offer-name" id="sm3">Field Support</div>
+        <div class="pillar-tagline" id="st3">"Moving from idea to action"</div>
+        <ul class="pillar-features">
+          <li id="s3f1">Transforming strategy into concrete actions</li>
+          <li id="s3f2">Implementing simple monitoring tools (dashboards)</li>
+          <li id="s3f3">Regular check-ins to make adjustments</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Continuous Monitoring & Advice','Suivi Continu & Conseil')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="sn4">04 — Strategic Consulting</div>
+        <div class="offer-name" id="sm4">Continuous Monitoring & Advice</div>
+        <div class="pillar-tagline" id="st4">"Your daily thinking partner"</div>
+        <ul class="pillar-features">
+          <li id="s4f1">Active monitoring of your sector and competition</li>
+          <li id="s4f2">Availability for your important decisions</li>
+          <li id="s4f3">Anticipation of risks and opportunities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCIAL -->
+  <div class="offers-panel" id="panel-financial">
+    <div class="cards-grid">
+      <div class="offer-card" onclick="pick(this,'Analysis of Your Figures','Analyse de vos Chiffres')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="fn1">01 — Financial Management</div>
+        <div class="offer-name" id="fm1">Analysis of Your Figures</div>
+        <div class="pillar-tagline" id="ft1">"Understanding the financial health of your business"</div>
+        <ul class="pillar-features">
+          <li id="f1f1">Reading and explaining your financial statements</li>
+          <li id="f1f2">Calculating and monitoring key ratios</li>
+          <li id="f1f3">Identifying problematic expenditure items</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Cash Flow Management','Pilotage de Trésorerie')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="fn2">02 — Financial Management</div>
+        <div class="offer-name" id="fm2">Cash Flow Management</div>
+        <div class="pillar-tagline" id="ft2">"No more struggling to make ends meet"</div>
+        <ul class="pillar-features">
+          <li id="f2f1">Cash flow forecast (3 to 12 months)</li>
+          <li id="f2f2">Daily/weekly monitoring of cash flows</li>
+          <li id="f2f3">Anticipation of cash flow tensions</li>
+          <li id="f2f4">Solutions to avoid overdrafts</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Cost Optimisation','Optimisation des Coûts')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="fn3">03 — Financial Management</div>
+        <div class="offer-name" id="fm3">Cost Optimisation</div>
+        <div class="pillar-tagline" id="ft3">"Reduce expenses without stifling growth"</div>
+        <ul class="pillar-features">
+          <li id="f3f1">Item-by-item analysis of your expenses</li>
+          <li id="f3f2">Identification of potential savings</li>
+          <li id="f3f3">Renegotiation of contracts</li>
+          <li id="f3f4">Improvement of your profitability</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Dashboards & Decision-Making','Tableaux de Bord & Décisions')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="fn4">04 — Financial Management</div>
+        <div class="offer-name" id="fm4">Dashboards & Decision-Making</div>
+        <div class="pillar-tagline" id="ft4">"Manage with simple indicators"</div>
+        <ul class="pillar-features">
+          <li id="f4f1">Customised, easy-to-read dashboards</li>
+          <li id="f4f2">Key indicators tailored to YOUR business</li>
+          <li id="f4f3">Automatic alerts on points to watch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNTING -->
+  <div class="offers-panel" id="panel-accounting">
+    <div class="cards-grid three">
+      <div class="offer-card" onclick="pick(this,'Implementation of Simple Tools','Mise en Place d\'Outils Simples')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="an1">01 — Accounting Support</div>
+        <div class="offer-name" id="am1">Implementation of Simple Tools</div>
+        <div class="pillar-tagline" id="at1">"Accounting tools you understand"</div>
+        <ul class="pillar-features">
+          <li id="a1f1">Software tailored to your size</li>
+          <li id="a1f2">Setup of your chart of accounts</li>
+          <li id="a1f3">Training in everyday use</li>
+          <li id="a1f4">Invoice and document templates</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Accounting & Follow-up','Comptabilité & Suivi')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="an2">02 — Accounting Support</div>
+        <div class="offer-name" id="am2">Accounting & Follow-up</div>
+        <div class="pillar-tagline" id="at2">"Your accounts up to date, hassle-free"</div>
+        <ul class="pillar-features">
+          <li id="a2f1">Recording and filing your invoices</li>
+          <li id="a2f2">Regular bank reconciliations</li>
+          <li id="a2f3">Preparation of declarations (VAT, tax)</li>
+        </ul>
+      </div>
+      <div class="offer-card" onclick="pick(this,'Payroll Management','Gestion de la Paie')">
+        <div class="offer-check">✓</div>
+        <div class="pillar-num" id="an3">03 — Accounting Support</div>
+        <div class="offer-name" id="am3">Payroll Management</div>
+        <div class="pillar-tagline" id="at3">"Simplified and compliant payroll"</div>
+        <ul class="pillar-features">
+          <li id="a3f1">Preparation and checking of payslips</li>
+          <li id="a3f2">Calculation of social security contributions</li>
+          <li id="a3f3">Social security declarations (DSN)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESG -->
+  <div class="offers-panel" id="panel-esg">
+    <div class="cards-grid">
+      <div class="offer-card" onclick="pick(this,'LIA\' ESG Score™','Score LIA\' ESG™')">
+        <div class="offer-check">✓</div>
+        <div class="offer-badge badge-free" id="lb-esg-free">FREE · Self-service</div>
+        <div class="offer-icon">🌱</div>
+        <div class="offer-name" id="lb-esg-free-name">LIA' ESG Score™</div>
+        <div class="offer-price">€0</div>
+        <div class="offer-price-sub" id="lb-esg-free-sub">5 minutes · 30 questions · GRI Framework</div>
+        <div class="offer-desc" id="lb-esg-free-desc">Get your ESG score instantly. Identify public grants and financial optimisations available to your business right now.</div>
+        <ul class="offer-features">
+          <li id="efl1">Automated ESG score out of 60</li>
+          <li id="efl2">13 grants and benefits identified</li>
+          <li id="efl3">Personalised report by email</li>
+          <li id="efl4">Environment / Social / Governance breakdown</li>
+        </ul>
+      </div>
+      <div class="offer-card featured" onclick="pick(this,'LIA\' ESG Coaching','Accompagnement LIA\' ESG')">
+        <div class="offer-check">✓</div>
+        <div class="offer-badge badge-pop" id="lb-esg-pro-badge">⭐ RECOMMENDED</div>
+        <div class="offer-icon">🎯</div>
+        <div class="offer-name" id="lb-esg-pro-name">LIA' ESG Coaching</div>
+        <div class="offer-price">From €299<span style="font-size:0.72rem;font-weight:400;color:var(--text-soft)" id="lb-mo">/month</span></div>
+        <div class="offer-price-sub" id="lb-esg-pro-sub">Personalised · Expert-led · Action-oriented</div>
+        <div class="offer-desc" id="lb-esg-pro-desc">Turn your ESG score into a concrete action plan with expert guidance to unlock grants and optimise your finances.</div>
+        <ul class="offer-features">
+          <li id="epl1">In-depth analysis of your LIA' score</li>
+          <li id="epl2">Personalised ESG action plan</li>
+          <li id="epl3">Grant application assistance</li>
+          <li id="epl4">Tax optimisation roadmap</li>
+          <li id="epl5">Monthly progress tracking</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="step-header">
+    <div class="step-eyebrow" id="s2-eye">Step 02 — Your details</div>
+    <div class="step-title" id="s2-title">Tell us about <em>your project</em></div>
+  </div>
+
+  <div class="recap-bar" id="recap-bar"><span id="recap-txt">✓ Selected service: —</span></div>
+
+  <div class="form-card">
+    <div class="form-head">
+      <div class="form-head-title" id="fh-t">Free quote request — No commitment</div>
+      <div class="form-head-sub" id="fh-s">We will get back to you within 24 business hours with a tailored proposal.</div>
+    </div>
+    <div class="form-body" id="form-body">
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label" id="l-fn">First name <span class="req">*</span></label>
+          <input class="form-input" id="fname" type="text" placeholder="John" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label" id="l-ln">Last name <span class="req">*</span></label>
+          <input class="form-input" id="lname" type="text" placeholder="Smith" required>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label" id="l-em">Email <span class="req">*</span></label>
+          <input class="form-input" id="email" type="email" placeholder="john@company.com" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label" id="l-ph">Phone</label>
+          <input class="form-input" id="phone" type="tel" placeholder="+33 6 00 00 00 00">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label" id="l-co">Company <span class="req">*</span></label>
+          <input class="form-input" id="company" type="text" placeholder="My Company Ltd" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label" id="l-sz">Company size</label>
+          <select class="form-select" id="size">
+            <option value="" id="sz0">— Select —</option>
+            <option value="Micro" id="sz1">Micro / Solo entrepreneur</option>
+            <option value="TPE" id="sz2">Micro-business (1–9 employees)</option>
+            <option value="PME" id="sz3">SME (10–249 employees)</option>
+            <option value="250+" id="sz4">Large company (250+)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="l-bu">Monthly budget</label>
+        <div class="budget-options">
+          <button class="budget-btn" onclick="pickBudget(this)" id="b1">< €300/mo</button>
+          <button class="budget-btn" onclick="pickBudget(this)" id="b2">€300–600/mo</button>
+          <button class="budget-btn" onclick="pickBudget(this)" id="b3">€600–1,500/mo</button>
+          <button class="budget-btn" onclick="pickBudget(this)" id="b4">> €1,500/mo</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="l-ms">Describe your project <span class="req">*</span></label>
+        <textarea class="form-textarea" id="message" placeholder="Tell us about your situation, your challenges and what you expect from our support..." required></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label" id="l-wh">When do you want to start?</label>
+        <select class="form-select" id="when">
+          <option value="" id="w0">— Select —</option>
+          <option value="ASAP" id="w1">As soon as possible</option>
+          <option value="1mo" id="w2">Within 1 month</option>
+          <option value="3mo" id="w3">Within 3 months</option>
+          <option value="explore" id="w4">Just exploring</option>
+        </select>
+      </div>
+      <div class="gdpr-row">
+        <input type="checkbox" class="gdpr-cb" id="gdpr">
+        <div class="gdpr-txt" id="l-gd">I agree that AuroreAD may use my data to process this quote request and contact me. Your data is kept strictly confidential and will never be shared with third parties.</div>
+      </div>
+      <button class="btn-submit" onclick="submitForm()"><span id="btn-txt">Send my quote request →</span></button>
+    </div>
+    <div class="success-box" id="success-box">
+      <div class="success-icon">✅</div>
+      <div class="success-title" id="suc-t">Thank you, <em>we're on it!</em></div>
+      <div class="success-desc" id="suc-d">Your quote request has been received. Alioune Adama Diaw will personally review your project and get back to you within 24 business hours.</div>
+      <a href="https://www.auroreadconsult.com/from-sasu-to-start-up" class="btn-lia" id="suc-b">Try LIA' ESG for free →</a>
+    </div>
+  </div>
+
+  <div class="trust-strip">
+    <div class="trust-item"><div class="trust-icon">⚡</div><div class="trust-label" id="tr1">Response within 24h</div><div class="trust-sub" id="tr1s">Every request personally reviewed and answered quickly.</div></div>
+    <div class="trust-item"><div class="trust-icon">🔒</div><div class="trust-label" id="tr2">100% Confidential</div><div class="trust-sub" id="tr2s">Your data is protected and never shared with third parties.</div></div>
+    <div class="trust-item"><div class="trust-icon">🤝</div><div class="trust-label" id="tr3">No commitment</div><div class="trust-sub" id="tr3s">This quote is free and without any obligation on your part.</div></div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="foot-brand">Aurore<span>AD</span> · Independent Advisory</div>
+  <div class="foot-copy">© 2025 AuroreAD · SIREN 940 689 839 · auroreadconsult.com</div>
+</footer>
+
+<script>
+let lang = 'en';
+let selName = null;
+
+function showTab(id) {
+  document.querySelectorAll('.offers-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+function pick(card, nameEN, nameFR) {
+  document.querySelectorAll('.offer-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selName = lang === 'fr' ? nameFR : nameEN;
+  const prefix = lang === 'fr' ? '✓ Service sélectionné : ' : '✓ Selected service: ';
+  document.getElementById('recap-txt').textContent = prefix + selName;
+  document.getElementById('recap-bar').classList.add('visible');
+  setTimeout(() => document.getElementById('form-body').scrollIntoView({behavior:'smooth',block:'start'}), 300);
+}
+
+function pickBudget(btn) {
+  document.querySelectorAll('.budget-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function submitForm() {
+  const fields = ['fname','lname','email','company','message'];
+  const ok = fields.every(f => document.getElementById(f).value.trim());
+  if (!ok) { alert(lang==='fr' ? 'Veuillez remplir tous les champs obligatoires (*).' : 'Please fill in all required fields (*).'); return; }
+  if (!document.getElementById('gdpr').checked) { alert(lang==='fr' ? 'Veuillez accepter la politique de confidentialité.' : 'Please accept the privacy policy.'); return; }
+
+  const budgetBtn = document.querySelector('.budget-btn.sel');
+  const budget = budgetBtn ? budgetBtn.textContent : (lang === 'fr' ? 'Non renseigné' : 'Not specified');
+
+  const data = {
+    prenom:         document.getElementById('fname').value.trim(),
+    nom:            document.getElementById('lname').value.trim(),
+    email:          document.getElementById('email').value.trim(),
+    telephone:      document.getElementById('phone').value.trim() || (lang === 'fr' ? 'Non renseigné' : 'Not specified'),
+    entreprise:     document.getElementById('company').value.trim(),
+    taille:         document.getElementById('size').value || (lang === 'fr' ? 'Non renseigné' : 'Not specified'),
+    budget:         budget,
+    message:        document.getElementById('message').value.trim(),
+    demarrage:      document.getElementById('when').value || (lang === 'fr' ? 'Non renseigné' : 'Not specified'),
+    service_choisi: selName || (lang === 'fr' ? 'Non sélectionné' : 'Not selected'),
+    langue:         lang === 'fr' ? 'Français' : 'English',
+    date:           new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {day:'2-digit', month:'long', year:'numeric'}),
+    _replyto:       document.getElementById('email').value.trim(),
+    _subject:       (lang === 'fr' ? '🔔 Nouvelle demande de devis — ' : '🔔 New quote request — ')
+                    + document.getElementById('fname').value.trim() + ' '
+                    + document.getElementById('lname').value.trim()
+  };
+
+  const btn = document.querySelector('.btn-submit');
+  const btnTxt = document.getElementById('btn-txt');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  btnTxt.textContent = lang === 'fr' ? 'Envoi en cours...' : 'Sending...';
+
+  fetch(FORMSPREE_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    document.getElementById('form-body').style.display = 'none';
+    document.getElementById('success-box').classList.add('visible');
+    window.scrollTo({ top: document.getElementById('success-box').offsetTop - 80, behavior: 'smooth' });
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btnTxt.textContent = lang === 'fr' ? 'Envoyer ma demande de devis →' : 'Send my quote request →';
+    alert(lang === 'fr'
+      ? "Une erreur est survenue. Veuillez réessayer ou nous contacter à Diawalioune.ad@gmail.com"
+      : 'An error occurred. Please try again or contact us at Diawalioune.ad@gmail.com');
+  });
+}
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&l==='en')||(i===1&&l==='fr')));
+  const fr = l === 'fr';
+  // Header
+  document.getElementById('h-sub').textContent = fr ? 'Devis Gratuit' : 'Free Quote';
+  document.getElementById('h-tag').textContent = fr ? 'Réponse sous 24h' : 'Response within 24h';
+  document.getElementById('hero-title').innerHTML = fr ? 'Demandez votre <em>devis gratuit</em>' : 'Request your <em>free quote</em>';
+  document.getElementById('hero-desc').textContent = fr ? "Sélectionnez le service adapté à vos besoins — nous vous répondons sous 24h avec une proposition personnalisée." : "Select the service that matches your needs — we'll get back to you within 24 hours with a personalised proposal.";
+  // Steps
+  document.getElementById('s1-eye').textContent = fr ? 'Étape 01 — Choisissez votre service' : 'Step 01 — Choose your service';
+  document.getElementById('s1-title').innerHTML = fr ? 'Comment pouvons-nous <em>vous aider ?</em>' : 'What can we <em>help you with?</em>';
+  document.getElementById('s2-eye').textContent = fr ? 'Étape 02 — Vos coordonnées' : 'Step 02 — Your details';
+  document.getElementById('s2-title').innerHTML = fr ? 'Parlez-nous de <em>votre projet</em>' : 'Tell us about <em>your project</em>';
+  // Tabs
+  document.getElementById('tl-starter').textContent = fr ? 'Offre Starter' : 'Starter Offer';
+  document.getElementById('tl-strategic').textContent = fr ? 'Conseil Stratégique' : 'Strategic Consulting';
+  document.getElementById('tl-financial').textContent = fr ? 'Pilotage Financier' : 'Financial Management';
+  document.getElementById('tl-accounting').textContent = fr ? 'Support Comptable' : 'Accounting Support';
+  // Starter panel
+  document.getElementById('lb-free').textContent = fr ? 'GRATUIT · Sans engagement' : 'FREE · No commitment';
+  document.getElementById('lb-diag-name').textContent = fr ? 'Diagnostic Entreprise' : 'Business Diagnosis';
+  document.getElementById('lb-diag-sub').textContent = fr ? 'Appel vidéo 30 min · Étape I · Sans obligation' : '30-min video call · Step I · No obligation';
+  document.getElementById('lb-diag-desc').textContent = fr ? "Un premier entretien sans engagement pour identifier vos priorités et débloquer votre situation." : "A first no-obligation consultation to identify your priorities and unlock your current situation.";
+  document.getElementById('df1').textContent = fr ? 'Appel vidéo de 30 minutes' : '30-minute video call';
+  document.getElementById('df2').textContent = fr ? 'Évaluation de votre situation actuelle' : 'Assessment of your current situation';
+  document.getElementById('df3').textContent = fr ? '2 à 3 recommandations actionnables' : '2–3 actionable recommendations';
+  document.getElementById('df4').textContent = fr ? 'Identification des quick wins' : 'Identification of quick wins';
+  document.getElementById('df5').textContent = fr ? 'Aucun engagement' : 'No strings attached';
+  document.getElementById('lb-pop').textContent = fr ? '⭐ POPULAIRE' : '⭐ POPULAR';
+  document.getElementById('lb-sp-name').textContent = fr ? 'Pack Starter' : 'Starter Pack';
+  document.getElementById('lb-vat').textContent = fr ? 'TTC' : 'VAT incl.';
+  document.getElementById('lb-sp-sub').textContent = fr ? 'Investissement unique · Valeur 500€+ · 7 jours · Étape II' : 'One-time · Value €500+ · 7 days total · Step II';
+  document.getElementById('lb-sp-desc').textContent = fr ? "Un programme d'accompagnement structuré sur 7 jours avec un plan d'action concret et personnalisé." : "A structured 7-day support programme with a concrete and personalised action plan.";
+  document.getElementById('sf1').textContent = fr ? 'Audit approfondi d\'1 heure' : 'In-depth 1-hour audit';
+  document.getElementById('sf2').textContent = fr ? 'Feuille de route personnalisée de 10 à 15 pages' : 'Custom 10–15 page roadmap';
+  document.getElementById('sf3').textContent = fr ? 'Plan d\'action sur 30 à 90 jours' : '30–90 day action plan';
+  document.getElementById('sf4').textContent = fr ? 'Session de revue de 45 minutes' : '45-minute review session';
+  document.getElementById('sf5').textContent = fr ? '1 semaine de support par email' : '1 week of email support';
+  document.getElementById('sf6').textContent = fr ? 'Choisissez votre focus : Finance, Prospection, Digital ou Opérations' : 'Choose your focus: Finance, Prospecting, Digital or Operations';
+  // Strategic
+  const sn = fr ? 'Conseil Stratégique' : 'Strategic Consulting';
+  [['sn1','sm1','st1','1','Diagnostic Stratégique','Strategic Diagnosis','"Photo de votre situation actuelle"','"Taking a snapshot of your current situation"'],
+   ['sn2','sm2','st2','2','Plan d\'Action Personnalisé','Personalised Action Plan','"Tracez votre cap"','"Chart your course"'],
+   ['sn3','sm3','st3','3','Accompagnement Terrain','Field Support','"De l\'idée à l\'action"','"Moving from idea to action"'],
+   ['sn4','sm4','st4','4','Suivi Continu & Conseil','Continuous Monitoring & Advice','"Votre partenaire au quotidien"','"Your daily thinking partner"']
+  ].forEach(([nn,mn,tn,n,nfr,nen,tfr,ten]) => {
+    document.getElementById(nn).textContent = `0${n} — ${sn}`;
+    document.getElementById(mn).textContent = fr ? nfr : nen;
+    document.getElementById(tn).textContent = fr ? tfr : ten;
+  });
+  const s1 = fr ? ['Analyse complète : forces, faiblesses, opportunités','Étude de votre marché et concurrence','Identification des obstacles à votre croissance'] : ['Comprehensive analysis: strengths, weaknesses, opportunities','Study of your market and competition','Identification of obstacles hindering your growth'];
+  s1.forEach((t,i) => { const el = document.getElementById(`s1f${i+1}`); if(el) el.textContent = t; });
+  const s2 = fr ? ['Objectifs clairs et réalistes (1 à 3 ans)','Stratégie adaptée à VOS ressources','Feuille de route priorisée'] : ['Clear and realistic goals (1 to 3 years)','Strategy tailored to YOUR resources','Prioritised action roadmap'];
+  s2.forEach((t,i) => { const el = document.getElementById(`s2f${i+1}`); if(el) el.textContent = t; });
+  const s3 = fr ? ['Transformation de la stratégie en actions concrètes','Mise en place d\'outils de suivi simples','Points réguliers pour ajustements'] : ['Transforming strategy into concrete actions','Implementing simple monitoring tools (dashboards)','Regular check-ins to make adjustments'];
+  s3.forEach((t,i) => { const el = document.getElementById(`s3f${i+1}`); if(el) el.textContent = t; });
+  const s4 = fr ? ['Veille active de votre secteur et concurrence','Disponibilité pour vos décisions importantes','Anticipation des risques et opportunités'] : ['Active monitoring of your sector and competition','Availability for your important decisions','Anticipation of risks and opportunities'];
+  s4.forEach((t,i) => { const el = document.getElementById(`s4f${i+1}`); if(el) el.textContent = t; });
+  // Financial
+  const fn = fr ? 'Pilotage Financier' : 'Financial Management';
+  [['fn1','fm1','ft1','1','Analyse de vos Chiffres','Analysis of Your Figures','"Comprendre la santé financière de votre entreprise"','"Understanding the financial health of your business"'],
+   ['fn2','fm2','ft2','2','Pilotage de Trésorerie','Cash Flow Management','"Fini les fins de mois difficiles"','"No more struggling to make ends meet"'],
+   ['fn3','fm3','ft3','3','Optimisation des Coûts','Cost Optimisation','"Réduire les dépenses sans freiner la croissance"','"Reduce expenses without stifling growth"'],
+   ['fn4','fm4','ft4','4','Tableaux de Bord & Décisions','Dashboards & Decision-Making','"Pilotez avec des indicateurs simples"','"Manage with simple indicators"']
+  ].forEach(([nn,mn,tn,n,nfr,nen,tfr,ten]) => {
+    document.getElementById(nn).textContent = `0${n} — ${fn}`;
+    document.getElementById(mn).textContent = fr ? nfr : nen;
+    document.getElementById(tn).textContent = fr ? tfr : ten;
+  });
+  // Accounting
+  const an = fr ? 'Support Comptable' : 'Accounting Support';
+  [['an1','am1','at1','1','Mise en Place d\'Outils Simples','Implementation of Simple Tools','"Des outils comptables que vous comprenez"','"Accounting tools you understand"'],
+   ['an2','am2','at2','2','Comptabilité & Suivi','Accounting & Follow-up','"Vos comptes à jour, sans stress"','"Your accounts up to date, hassle-free"'],
+   ['an3','am3','at3','3','Gestion de la Paie','Payroll Management','"Une paie simplifiée et conforme"','"Simplified and compliant payroll"']
+  ].forEach(([nn,mn,tn,n,nfr,nen,tfr,ten]) => {
+    document.getElementById(nn).textContent = `0${n} — ${an}`;
+    document.getElementById(mn).textContent = fr ? nfr : nen;
+    document.getElementById(tn).textContent = fr ? tfr : ten;
+  });
+  // ESG
+  document.getElementById('lb-esg-free').textContent = fr ? 'GRATUIT · En autonomie' : 'FREE · Self-service';
+  document.getElementById('lb-esg-free-name').textContent = fr ? 'Score LIA\' ESG™' : 'LIA\' ESG Score™';
+  document.getElementById('lb-esg-free-sub').textContent = fr ? '5 minutes · 30 questions · Cadre GRI' : '5 minutes · 30 questions · GRI Framework';
+  document.getElementById('lb-esg-free-desc').textContent = fr ? 'Obtenez votre score ESG instantanément et identifiez les aides publiques accessibles à votre entreprise.' : 'Get your ESG score instantly. Identify public grants and financial optimisations available to your business.';
+  document.getElementById('lb-esg-pro-badge').textContent = fr ? '⭐ RECOMMANDÉ' : '⭐ RECOMMENDED';
+  document.getElementById('lb-esg-pro-name').textContent = fr ? 'Accompagnement LIA\' ESG' : 'LIA\' ESG Coaching';
+  document.getElementById('lb-mo').textContent = fr ? '/mois' : '/month';
+  document.getElementById('lb-esg-pro-sub').textContent = fr ? 'Personnalisé · Expert · Orienté action' : 'Personalised · Expert-led · Action-oriented';
+  document.getElementById('lb-esg-pro-desc').textContent = fr ? 'Transformez votre score ESG en plan d\'action concret avec un expert pour débloquer vos aides et optimiser vos finances.' : 'Turn your ESG score into a concrete action plan with expert guidance to unlock grants and optimise your finances.';
+  // Form
+  document.getElementById('fh-t').textContent = fr ? 'Demande de devis gratuit — Sans engagement' : 'Free quote request — No commitment';
+  document.getElementById('fh-s').textContent = fr ? 'Nous vous répondons sous 24h ouvrées avec une proposition sur mesure.' : 'We will get back to you within 24 business hours with a tailored proposal.';
+  document.getElementById('l-fn').innerHTML = fr ? 'Prénom <span class="req">*</span>' : 'First name <span class="req">*</span>';
+  document.getElementById('l-ln').innerHTML = fr ? 'Nom <span class="req">*</span>' : 'Last name <span class="req">*</span>';
+  document.getElementById('l-em').innerHTML = fr ? 'Email <span class="req">*</span>' : 'Email <span class="req">*</span>';
+  document.getElementById('l-ph').textContent = fr ? 'Téléphone' : 'Phone';
+  document.getElementById('l-co').innerHTML = fr ? 'Entreprise <span class="req">*</span>' : 'Company <span class="req">*</span>';
+  document.getElementById('l-sz').textContent = fr ? 'Taille de l\'entreprise' : 'Company size';
+  document.getElementById('l-bu').textContent = fr ? 'Budget mensuel envisagé' : 'Monthly budget';
+  document.getElementById('l-ms').innerHTML = fr ? 'Décrivez votre projet <span class="req">*</span>' : 'Describe your project <span class="req">*</span>';
+  document.getElementById('l-wh').textContent = fr ? 'Quand souhaitez-vous démarrer ?' : 'When do you want to start?';
+  document.getElementById('l-gd').textContent = fr ? "J'accepte qu'AuroreAD utilise mes données pour traiter cette demande. Vos données sont confidentielles." : "I agree that AuroreAD may use my data to process this quote request. Your data is kept strictly confidential.";
+  document.getElementById('btn-txt').textContent = fr ? 'Envoyer ma demande de devis →' : 'Send my quote request →';
+  // Selects
+  document.getElementById('sz0').textContent = fr ? '— Sélectionner —' : '— Select —';
+  document.getElementById('sz1').textContent = fr ? 'Micro / Auto-entrepreneur' : 'Micro / Solo entrepreneur';
+  document.getElementById('sz2').textContent = fr ? 'TPE (1–9 salariés)' : 'Micro-business (1–9 employees)';
+  document.getElementById('sz3').textContent = fr ? 'PME (10–249 salariés)' : 'SME (10–249 employees)';
+  document.getElementById('sz4').textContent = fr ? 'Grande entreprise (250+)' : 'Large company (250+)';
+  document.getElementById('w0').textContent = fr ? '— Sélectionner —' : '— Select —';
+  document.getElementById('w1').textContent = fr ? 'Dès que possible' : 'As soon as possible';
+  document.getElementById('w2').textContent = fr ? 'Dans le mois' : 'Within 1 month';
+  document.getElementById('w3').textContent = fr ? "D'ici 3 mois" : 'Within 3 months';
+  document.getElementById('w4').textContent = fr ? "En phase d'exploration" : 'Just exploring';
+  document.getElementById('b1').textContent = fr ? '< 300€/mois' : '< €300/mo';
+  document.getElementById('b2').textContent = fr ? '300–600€/mois' : '€300–600/mo';
+  document.getElementById('b3').textContent = fr ? '600–1 500€/mois' : '€600–1,500/mo';
+  document.getElementById('b4').textContent = fr ? '> 1 500€/mois' : '> €1,500/mo';
+  // Placeholders
+  document.getElementById('fname').placeholder = fr ? 'Jean' : 'John';
+  document.getElementById('lname').placeholder = fr ? 'Dupont' : 'Smith';
+  document.getElementById('email').placeholder = fr ? 'jean@maboite.fr' : 'john@company.com';
+  document.getElementById('company').placeholder = fr ? 'Ma Société SAS' : 'My Company Ltd';
+  document.getElementById('message').placeholder = fr ? 'Décrivez votre situation, vos défis et ce que vous attendez de notre accompagnement...' : 'Tell us about your situation, your challenges and what you expect from our support...';
+  // Success
+  document.getElementById('suc-t').innerHTML = fr ? 'Merci, <em>nous nous en occupons !</em>' : 'Thank you, <em>we\'re on it!</em>';
+  document.getElementById('suc-d').textContent = fr ? 'Votre demande a bien été reçue. Alioune Adama Diaw examinera votre projet personnellement et vous répondra sous 24h ouvrées.' : 'Your quote request has been received. Alioune Adama Diaw will personally review your project and get back to you within 24 business hours.';
+  document.getElementById('suc-b').textContent = fr ? "Tester LIA' ESG gratuitement →" : "Try LIA' ESG for free →";
+  // Trust
+  document.getElementById('tr1').textContent = fr ? 'Réponse sous 24h' : 'Response within 24h';
+  document.getElementById('tr1s').textContent = fr ? 'Chaque demande est examinée personnellement.' : 'Every request personally reviewed and answered quickly.';
+  document.getElementById('tr2').textContent = fr ? '100% Confidentiel' : '100% Confidential';
+  document.getElementById('tr2s').textContent = fr ? 'Vos données sont protégées et jamais partagées.' : 'Your data is protected and never shared with third parties.';
+  document.getElementById('tr3').textContent = fr ? 'Sans engagement' : 'No commitment';
+  document.getElementById('tr3s').textContent = fr ? 'Ce devis est gratuit et sans aucune obligation.' : 'This quote is free and without any obligation on your part.';
+  // Recap update
+  if (selName) {
+    const prefix = fr ? '✓ Service sélectionné : ' : '✓ Selected service: ';
+    document.getElementById('recap-txt').textContent = prefix + selName;
+  }
+}
+</script>
+</body>
+</html>
